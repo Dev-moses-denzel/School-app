@@ -10,17 +10,24 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-      - name: Make gradle executable
-        run: chmod +x gradlew
-      - name: Build Android APK
-        run: ./gradlew :app:assembleDebug
-      - name: Build Desktop App
-        run: ./gradlew :app:packageDistributionForCurrentOS || ./gradlew :app:packageDebugDistributable || echo "Desktop target not configured"
+      - name: Find and build Gradle project
+        run: |
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "Error: gradlew wrapper file could not be found anywhere in this repository."
+            exit 1
+          fi
+          PROJECT_ROOT=$(dirname "$GRADLEW_PATH")
+          echo "Found project directory root path at: $PROJECT_ROOT"
+          cd "$PROJECT_ROOT"
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          ./gradlew packageDistributionForCurrentOS || ./gradlew packageDebugDistributable || echo "Desktop target not configured"
       - name: Upload Built App Files
         uses: actions/upload-artifact@v4
         with:
           name: school-app-packages
           path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/compose/binaries/
+            **/build/outputs/apk/debug/*-debug.apk
+            **/build/compose/binaries/
             
