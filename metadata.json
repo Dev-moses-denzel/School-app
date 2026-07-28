@@ -1,0 +1,6 @@
+{
+  "name": "Result Hub",
+  "description": "Comprehensive online student results portal, grade analytics, marksheets, and official PDF/report card downloader.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
