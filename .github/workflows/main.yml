@@ -10,19 +10,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-      - name: Find and build Gradle project
+      - name: Automatically Install and Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Run Build in App Folder
         run: |
-          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
-          if [ -z "$GRADLEW_PATH" ]; then
-            echo "Error: gradlew wrapper file could not be found anywhere in this repository."
-            exit 1
-          fi
-          PROJECT_ROOT=$(dirname "$GRADLEW_PATH")
-          echo "Found project directory root path at: $PROJECT_ROOT"
+          PROJECT_ROOT=$(find . -name "build.gradle.kts" -not -path "*/build/*" | head -n 1 | xargs dirname)
+          echo "Building inside folder: $PROJECT_ROOT"
           cd "$PROJECT_ROOT"
-          chmod +x gradlew
-          ./gradlew assembleDebug
-          ./gradlew packageDistributionForCurrentOS || ./gradlew packageDebugDistributable || echo "Desktop target not configured"
+          gradle assembleDebug
+          gradle packageDistributionForCurrentOS || gradle packageDebugDistributable || echo "Desktop target not configured"
       - name: Upload Built App Files
         uses: actions/upload-artifact@v4
         with:
