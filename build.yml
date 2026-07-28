@@ -11,7 +11,7 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
       - name: Make gradle executable
-        run: chmod +x gradlew
+        run: chmod +x gradle
       - name: Build Android APK
         run: ./gradlew :app:assembleDebug
       - name: Build Desktop App
