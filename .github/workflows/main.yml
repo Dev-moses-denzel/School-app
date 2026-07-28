@@ -10,13 +10,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-      - name: Automatically Install and Setup Gradle
+      - name: Automatically Install and Setup Modern Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
-      - name: Run Build in App Folder
+          gradle-version: '9.3.1'
+      - name: Run Build in Dynamic Project Folder
         run: |
-          PROJECT_ROOT=$(find . -name "build.gradle.kts" -not -path "*/build/*" | head -n 1 | xargs dirname)
+          GRADLE_FILE=$(find . -name "build.gradle.kts" -not -path "*/build/*" | head -n 1)
+          PROJECT_ROOT=$(dirname "$GRADLE_FILE")
           echo "Building inside folder: $PROJECT_ROOT"
           cd "$PROJECT_ROOT"
           gradle assembleDebug
