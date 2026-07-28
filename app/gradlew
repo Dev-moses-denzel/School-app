@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# Attempt to set APP_HOME
 # Resolve links: $0 may be a link
 PRG="$0"
 while [ -h "$PRG" ] ; do
@@ -20,47 +19,25 @@ cd "$SAVED" >/dev/null
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
-# Use the maximum available, otherwise default to 512M
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
-
-# Collect all arguments for the java command via the positional parameters.
-NUM_ARGS=$#
-for arg do
-    KEY_VALUE=`echo "$arg" | egrep -e '^--jvm-opts='`
-    if [ "$KEY_VALUE" ] ; then
-        JVM_OPTS=`echo "$arg" | sed 's/^--jvm-opts=//'`
-        eval set -- "$@"
-        break
-    fi
-done
-
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
     if [ -x "$JAVA_HOME/bin/java" ] ; then
         JAVACMD="$JAVA_HOME/bin/java"
     else
         echo "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME" >&2
-        echo "Please set the JAVA_HOME variable in your environment to match the" >&2
-        echo "location of your Java installation." >&2
         exit 1
     fi
 else
     JAVACMD="java"
-    which java >/dev/null 2>&1 || {
-        echo "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH." >&2
-        echo "Please set the JAVA_HOME variable in your environment to match the" >&2
-        echo "location of your Java installation." >&2
-        exit 1
-    }
 fi
 
 # Locate the gradle-wrapper.jar file
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
 if [ ! -e "$CLASSPATH" ]; then
-    # Fallback search if nested
+    # Fallback to look inside the gradle directory manually if it's there
     CLASSPATH=$(find . -name "gradle-wrapper.jar" | head -n 1)
 fi
 
-# Execute Gradle
-exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+# Execute Gradle without custom JVM opts to avoid memory string parsing errors
+exec "$JAVACMD" "-Xmx512m" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
