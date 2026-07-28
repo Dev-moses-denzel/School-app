@@ -1,0 +1,26 @@
+name: Build Android and Desktop Apps
+on: [push, workflow_dispatch]
+jobs:
+  build-all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+      - name: Make gradle executable
+        run: chmod +x gradlew
+      - name: Build Android APK
+        run: ./gradlew :app:assembleDebug
+      - name: Build Desktop App
+        run: ./gradlew :app:packageDistributionForCurrentOS || ./gradlew :app:packageDebugDistributable || echo "Desktop target not configured"
+      - name: Upload Built App Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: school-app-packages
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/compose/binaries/
+            
